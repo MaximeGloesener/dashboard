@@ -1,0 +1,48 @@
+{
+    "model": "runs/detect/train2/weights/best.pt",
+    "model_info": {"layers": 168, "params": 11130615, "flops": 28.463462399999997},
+    "base_model": {
+      "max_memory_used": 120.949248,
+      "current_memory_used": 78.186496,
+      "fps_gpu": 606.8241559736973,
+      "total_emissions": 0.00013112003695185694,
+      "total_energy": 0.000949409059293569,
+      "avg_emissions": 2.622400739037139e-8,
+      "avg_energy": 1.898818118587138e-7,
+      "map50": 0.8184896225185548,
+      "map5095": 0.6296076184590018
+    },
+    "fp32": {
+      "max_memory_used": 144.889344,
+      "current_memory_used": 139.695616,
+      "fps_gpu": 506.2461467008034,
+      "total_emissions": 0.00014511191760217308,
+      "total_energy": 0.0010507209453696994,
+      "avg_emissions": 2.9022383520434615e-8,
+      "avg_energy": 2.101441890739399e-7,
+      "map50": 0.8175244067849629,
+      "map5095": 0.6235453106259409
+    },
+    "fp16": {
+      "max_memory_used": 207.41888,
+      "current_memory_used": 202.225152,
+      "fps_gpu": 859.5660264450073,
+      "total_emissions": 8.346101187101942e-5,
+      "total_energy": 0.0006043213730731927,
+      "avg_emissions": 1.6692202374203883e-8,
+      "avg_energy": 1.2086427461463853e-7,
+      "map50": 0.8175658758204161,
+      "map5095": 0.6237565621978695
+    },
+    "int8": {
+      "max_memory_used": 207.421952,
+      "current_memory_used": 202.228224,
+      "fps_gpu": 1158.1564810588043,
+      "total_emissions": 6.681103247468709e-5,
+      "total_energy": 0.00048376282501746536,
+      "avg_emissions": 1.3362206494937419e-8,
+      "avg_energy": 9.675256500349307e-8,
+      "map50": 0.7713906038098369,
+      "map5095": 0.5813136131512587
+    }
+  }
