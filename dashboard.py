@@ -110,7 +110,7 @@ app.layout = html.Div([
             dcc.Dropdown(
                 id='y-axis-dropdown',
                 options=[{'label': metric, 'value': metric} for metric in metrics],
-                value='map5095'
+                value='mAP@0.5:0.95'
             ),
         ], style={'width': '45%', 'display': 'inline-block'}),
     ]),
