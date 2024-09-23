@@ -39,6 +39,7 @@ def load_all_data(hardware):
 
 # Initialize the Dash app
 app = Dash(__name__)
+server = app.server
 
 # Define metrics for dropdowns
 metrics = [
