@@ -1,5 +1,5 @@
 {
-    "model": "runs/detect/train2/weights/best.pt",
+    "model": "YOLOv8s",
     "model_info": {"layers": 168, "params": 11130615, "flops": 28.463462399999997},
     "base_model": {
       "max_memory_used": 120.949248,

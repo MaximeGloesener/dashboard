@@ -29,36 +29,43 @@ def prepare_dataframe(data):
                 rows.append(row)
     return pd.DataFrame(rows)
 
-# Load data for different model sizes
-model_sizes = ['n', 's', 'm', 'l', 'x']  # Add or modify as needed
-data = {}
-for size in model_sizes:
-    file_path = f'yolo_{size}_results.json'  # Adjust file naming convention if needed
-    data[size] = load_data(file_path)
+def load_all_data(hardware):
+    model_sizes = ['n', 's', 'm', 'l', 'x']  # Add or modify as needed
+    data = {}
+    for size in model_sizes:
+        file_path = f'results/{hardware}/yolo_{size}_results.json'  # Adjust file naming convention if needed
+        data[size] = load_data(file_path)
+    return prepare_dataframe(data)
 
-# Prepare DataFrame
-df = prepare_dataframe(data)
-
-# Round the values in the DataFrame
-for column in df.columns:
-    if column in ['Avg Energy (mWh)', 'Avg Emissions (gCO2eq)', 'mAP@0.5', 'mAP@0.5:0.95']:
-        df[column] = df[column].round(4)
-    elif column not in ['Model Size', 'Precision']:
-        df[column] = df[column].round(2)
+# Initialize the Dash app
+app = Dash(__name__)
 
 # Define metrics for dropdowns
 metrics = [
     'FPS (GPU)', 'Avg Emissions (gCO2eq)', 'Avg Energy (mWh)',
     'mAP@0.5', 'mAP@0.5:0.95', 'Layers', 'Parameters (M)', 'FLOPS (B)'
 ]
+model_sizes = ['n', 's', 'm', 'l', 'x']
 
-# Initialize the Dash app
-app = Dash(__name__)
-server = app.server
+# Load initial data for default hardware
+df = load_all_data('4090')
+
 
 # Define the layout
 app.layout = html.Div([
     html.H1("YOLO Model Comparison Dashboard"),
+
+    html.Div([
+        html.Label("Select Hardware:"),
+        dcc.Dropdown(
+            id='hardware-dropdown',
+            options=[
+                {'label': 'RTX 4090', 'value': '4090'},
+                {'label': 'Jetson Xavier', 'value': 'jetson'}
+            ],
+            value='4090'  # Default value
+        ),
+    ], style={'width': '30%', 'display': 'inline-block'}),
 
     html.Div([
         html.Div([
@@ -137,18 +144,32 @@ app.layout = html.Div([
 ])
 
 @app.callback(
-    Output('bar-chart', 'figure'),
-    [Input('metric-dropdown', 'value'),
+    [Output('bar-chart', 'figure'),
+     Output('scatter-plot', 'figure'),
+     Output('metrics-table', 'data')],
+    [Input('hardware-dropdown', 'value'),
+     Input('metric-dropdown', 'value'),
      Input('model-size-dropdown', 'value'),
-     Input('precision-dropdown', 'value')]
+     Input('precision-dropdown', 'value'),
+     Input('x-axis-dropdown', 'value'),
+     Input('y-axis-dropdown', 'value')]
 )
-def update_bar_chart(selected_metric, selected_sizes, selected_precisions):
+def update_dashboard(hardware, selected_metric, selected_sizes, selected_precisions, x_metric, y_metric):
+    global df
+    df = load_all_data(hardware)
+    # Round the values in the DataFrame
+    for column in df.columns:
+        if column in ['Avg Energy (mWh)', 'Avg Emissions (gCO2eq)', 'mAP@0.5', 'mAP@0.5:0.95']:
+            df[column] = df[column].round(4)
+        elif column not in ['Model Size', 'Precision']:
+            df[column] = df[column].round(2)
+
     filtered_df = df[
         (df['Model Size'].isin(selected_sizes)) &
         (df['Precision'].isin(selected_precisions))
     ]
 
-    fig = px.bar(
+    bar_fig = px.bar(
         filtered_df,
         x='Model Size',
         y=selected_metric,
@@ -158,15 +179,7 @@ def update_bar_chart(selected_metric, selected_sizes, selected_precisions):
         labels={selected_metric: selected_metric.replace('_', ' ').title()}
     )
 
-    return fig
-
-@app.callback(
-    Output('scatter-plot', 'figure'),
-    [Input('x-axis-dropdown', 'value'),
-     Input('y-axis-dropdown', 'value')]
-)
-def update_scatter_plot(x_metric, y_metric):
-    fig = px.scatter(
+    scatter_fig = px.scatter(
         df,
         x=x_metric,
         y=y_metric,
@@ -179,9 +192,9 @@ def update_scatter_plot(x_metric, y_metric):
     )
 
     # Increase marker size
-    fig.update_traces(marker=dict(size=12))
+    scatter_fig.update_traces(marker=dict(size=12))
 
-    return fig
+    return bar_fig, scatter_fig, df.to_dict('records')
 
 if __name__ == '__main__':
     app.run_server(debug=True)

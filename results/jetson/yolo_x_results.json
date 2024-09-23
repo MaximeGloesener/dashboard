@@ -1,0 +1,48 @@
+{
+  "model": "YOLOv8x",
+  "model_info": {"layers": 268, "params": 68136087, "flops": 257.4543872},
+  "base_model": {
+    "max_memory_used": 575.523328,
+    "current_memory_used": 312.08448,
+    "fps_gpu": 5.463433941163093,
+    "total_emissions": 3.410890453684011e-5,
+    "total_energy": 0.01434824037749321,
+    "avg_emissions": 6.821780907368022e-9,
+    "avg_energy": 2.869648075498642e-6,
+    "map50": 0.8614630717952328,
+    "map5095": 0.6909340566413739
+  },
+  "fp32": {
+    "max_memory_used": 349.749248,
+    "current_memory_used": 344.589312,
+    "fps_gpu": 6.179418312454202,
+    "total_emissions": 3.0401603031902376e-5,
+    "total_energy": 0.012788728166034284,
+    "avg_emissions": 6.080320606380475e-9,
+    "avg_energy": 2.557745633206857e-6,
+    "map50": 0.8580211646655859,
+    "map5095": 0.6806709273720519
+  },
+  "fp16": {
+    "max_memory_used": 382.983168,
+    "current_memory_used": 377.823232,
+    "fps_gpu": 18.96356617145072,
+    "total_emissions": 1.086284589210095e-5,
+    "total_energy": 0.004569561120767921,
+    "avg_emissions": 2.17256917842019e-9,
+    "avg_energy": 9.139122241535841e-7,
+    "map50": 0.8576614612840512,
+    "map5095": 0.6799500724387275
+  },
+  "int8": {
+    "max_memory_used": 383.008768,
+    "current_memory_used": 377.848832,
+    "fps_gpu": 6.1875976237241375,
+    "total_emissions": 3.037548837346876e-5,
+    "total_energy": 0.012777742782549542,
+    "avg_emissions": 6.075097674693752e-9,
+    "avg_energy": 2.5555485565099086e-6,
+    "map50": 0.8580211239518738,
+    "map5095": 0.6806708058271703
+  }
+}
