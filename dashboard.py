@@ -177,7 +177,8 @@ def update_dashboard(hardware, selected_metric, selected_sizes, selected_precisi
         color='Precision',
         barmode='group',
         title=f'{selected_metric} Comparison',
-        labels={selected_metric: selected_metric.replace('_', ' ').title()}
+        labels={selected_metric: selected_metric.replace('_', ' ').title(),
+                'Model Size': 'YOLO Model Version'}
     )
 
     scatter_fig = px.scatter(
