@@ -38,8 +38,18 @@ def load_all_data(hardware):
     return prepare_dataframe(data)
 
 # Initialize the Dash app
-app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=[
+    'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap'
+])
 server = app.server
+
+# Define custom styles
+colors = {
+    'background': '#f4f4f4',
+    'text': '#333333',
+    'primary': '#007bff',
+    'secondary': '#6c757d'
+}
 
 # Define metrics for dropdowns
 metrics = [
@@ -51,81 +61,87 @@ model_sizes = ['n', 's', 'm', 'l', 'x']
 # Load initial data for default hardware
 df = load_all_data('4090')
 
-
-# Define the layout
+# Define the layout with improved styling
 app.layout = html.Div([
-    html.H1("YOLO Model Comparison Dashboard"),
+    html.H1("YOLO Model Comparison Dashboard",
+            style={'textAlign': 'center', 'color': colors['primary'], 'fontFamily': 'Roboto, sans-serif', 'marginBottom': '30px'}),
 
     html.Div([
-        html.Label("Select Hardware:"),
+        html.Label("Select Hardware:", style={'fontWeight': 'bold', 'marginBottom': '5px'}),
         dcc.Dropdown(
             id='hardware-dropdown',
             options=[
                 {'label': 'RTX 4090', 'value': '4090'},
                 {'label': 'Jetson Xavier', 'value': 'jetson'}
             ],
-            value='4090'  # Default value
+            value='4090',
+            style={'width': '100%', 'marginBottom': '20px'}
         ),
-    ], style={'width': '30%', 'display': 'inline-block'}),
+    ], style={'width': '30%', 'display': 'inline-block', 'verticalAlign': 'top'}),
 
     html.Div([
         html.Div([
-            html.Label("Select Metric:"),
+            html.Label("Select Metric:", style={'fontWeight': 'bold', 'marginBottom': '5px'}),
             dcc.Dropdown(
                 id='metric-dropdown',
                 options=[{'label': metric, 'value': metric} for metric in metrics],
-                value='FPS (GPU)'
+                value='FPS (GPU)',
+                style={'width': '100%', 'marginBottom': '20px'}
             ),
-        ], style={'width': '30%', 'display': 'inline-block'}),
+        ], style={'width': '30%', 'display': 'inline-block', 'marginRight': '5%'}),
 
         html.Div([
-            html.Label("Select Model Size:"),
+            html.Label("Select Model Size:", style={'fontWeight': 'bold', 'marginBottom': '5px'}),
             dcc.Dropdown(
                 id='model-size-dropdown',
-                options=[{'label': size, 'value': size} for size in model_sizes],
+                options=[{'label': size.upper(), 'value': size} for size in model_sizes],
                 value=model_sizes,
-                multi=True
+                multi=True,
+                style={'width': '100%', 'marginBottom': '20px'}
             ),
-        ], style={'width': '30%', 'display': 'inline-block'}),
+        ], style={'width': '30%', 'display': 'inline-block', 'marginRight': '5%'}),
 
         html.Div([
-            html.Label("Select Precision:"),
+            html.Label("Select Precision:", style={'fontWeight': 'bold', 'marginBottom': '5px'}),
             dcc.Dropdown(
                 id='precision-dropdown',
                 options=[{'label': prec, 'value': prec} for prec in df['Precision'].unique()],
                 value=df['Precision'].unique(),
-                multi=True
+                multi=True,
+                style={'width': '100%', 'marginBottom': '20px'}
             ),
         ], style={'width': '30%', 'display': 'inline-block'}),
-    ]),
+    ], style={'width': '100%', 'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '30px'}),
 
     dcc.Graph(id='bar-chart'),
 
-    html.H2("Multi-Metric Comparison"),
+    html.H2("Multi-Metric Comparison", style={'textAlign': 'center', 'color': colors['secondary'], 'fontFamily': 'Roboto, sans-serif', 'marginTop': '40px', 'marginBottom': '20px'}),
 
     html.Div([
         html.Div([
-            html.Label("Select X-axis Metric:"),
+            html.Label("Select X-axis Metric:", style={'fontWeight': 'bold', 'marginBottom': '5px'}),
             dcc.Dropdown(
                 id='x-axis-dropdown',
                 options=[{'label': metric, 'value': metric} for metric in metrics],
-                value='FPS (GPU)'
+                value='FPS (GPU)',
+                style={'width': '100%', 'marginBottom': '20px'}
             ),
-        ], style={'width': '45%', 'display': 'inline-block'}),
+        ], style={'width': '45%', 'display': 'inline-block', 'marginRight': '10%'}),
 
         html.Div([
-            html.Label("Select Y-axis Metric:"),
+            html.Label("Select Y-axis Metric:", style={'fontWeight': 'bold', 'marginBottom': '5px'}),
             dcc.Dropdown(
                 id='y-axis-dropdown',
                 options=[{'label': metric, 'value': metric} for metric in metrics],
-                value='mAP@0.5:0.95'
+                value='mAP@0.5:0.95',
+                style={'width': '100%', 'marginBottom': '20px'}
             ),
         ], style={'width': '45%', 'display': 'inline-block'}),
-    ]),
+    ], style={'width': '100%', 'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '30px'}),
 
     dcc.Graph(id='scatter-plot'),
 
-    html.H2("Metrics Table"),
+    html.H2("Metrics Table", style={'textAlign': 'center', 'color': colors['secondary'], 'fontFamily': 'Roboto, sans-serif', 'marginTop': '40px', 'marginBottom': '20px'}),
 
     dash_table.DataTable(
         id='metrics-table',
@@ -136,13 +152,26 @@ app.layout = html.Div([
         sort_action="native",
         sort_mode="multi",
         style_table={'overflowX': 'auto'},
-        style_cell={'textAlign': 'left', 'padding': '5px'},
+        style_cell={
+            'textAlign': 'left',
+            'padding': '10px',
+            'fontFamily': 'Roboto, sans-serif',
+            'fontSize': '14px'
+        },
         style_header={
-            'backgroundColor': 'lightgrey',
-            'fontWeight': 'bold'
-        }
+            'backgroundColor': colors['primary'],
+            'color': 'white',
+            'fontWeight': 'bold',
+            'textAlign': 'center'
+        },
+        style_data_conditional=[
+            {
+                'if': {'row_index': 'odd'},
+                'backgroundColor': colors['background']
+            }
+        ]
     )
-])
+], style={'padding': '20px', 'fontFamily': 'Roboto, sans-serif', 'backgroundColor': 'white'})
 
 @app.callback(
     [Output('bar-chart', 'figure'),
